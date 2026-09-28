@@ -1,0 +1,134 @@
+{% extends "battery_app/base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="row align-items-center mb-5">
+    <div class="col-lg-7 mb-4 mb-lg-0">
+        <div class="badge px-3 py-2 rounded-pill mb-3" style="background: rgba(0, 242, 254, 0.1); color: var(--accent-cyan); border: 1px solid rgba(0, 242, 254, 0.2);">
+            <i class="fa-solid fa-sparkles me-1"></i> Real-time Telemetry & Predictive Analytics
+        </div>
+        <h1 class="display-4 fw-bold mb-3 text-white">
+            EV Battery Health <br>
+            <span style="background: linear-gradient(135deg, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                AI Intelligence Hub
+            </span>
+        </h1>
+        <p class="lead text-secondary mb-4" style="font-size: 1.15rem; max-width: 580px;">
+            Monitors real-time battery degradation, Arrhenius thermal stress kinetics, and multi-variable cycle decay through an end-to-end Big Data pipeline (Kafka, PySpark, XGBoost).
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+            <a href="{% url 'predict' %}" class="btn btn-gradient btn-lg px-4">
+                <i class="fa-solid fa-gauge-high me-2"></i> Launch Health Predictor
+            </a>
+            <a href="#pipeline-architecture" class="btn btn-outline-light btn-lg px-4" style="border-radius: 10px; border-color: var(--bg-card-border);">
+                <i class="fa-solid fa-diagram-project me-2"></i> View Pipeline Architecture
+            </a>
+        </div>
+    </div>
+
+    <!-- Live Telemetry Quick Cards -->
+    <div class="col-lg-5">
+        <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0 fw-bold text-white"><i class="fa-solid fa-server text-cyan me-2" style="color:#00f2fe;"></i> Live Cluster Status</h5>
+                <span class="badge bg-success rounded-pill px-3 py-1"><i class="fa-solid fa-circle me-1 fs-6"></i> Active</span>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-6">
+                    <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--bg-card-border);">
+                        <div class="text-secondary small fw-semibold">KAFKA TOPIC</div>
+                        <div class="h6 mb-0 text-cyan mt-1" style="color:#00f2fe;">ev-battery-telemetry</div>
+                        <div class="small text-muted mt-1"><i class="fa-solid fa-wave-square me-1"></i> Streaming 9092</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--bg-card-border);">
+                        <div class="text-secondary small fw-semibold">SPARK ENGINE</div>
+                        <div class="h6 mb-0 text-white mt-1">Snappy Parquet</div>
+                        <div class="small text-muted mt-1"><i class="fa-solid fa-database me-1"></i> Partitioned LFP/NMC</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--bg-card-border);">
+                        <div class="text-secondary small fw-semibold">XGBOOST AI</div>
+                        <div class="h5 mb-0 text-warning mt-1">98.47% R²</div>
+                        <div class="small text-muted mt-1"><i class="fa-solid fa-bullseye me-1"></i> RMSE 0.4152</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--bg-card-border);">
+                        <div class="text-secondary small fw-semibold">HIVE WAREHOUSE</div>
+                        <div class="h6 mb-0 text-white mt-1">ev_analytics_db</div>
+                        <div class="small text-muted mt-1"><i class="fa-solid fa-layer-group me-1"></i> Gold Parquet</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Architecture Pipeline Cards -->
+<div id="pipeline-architecture" class="mb-5 pt-4">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-white mb-2">End-to-End Enterprise Architecture</h2>
+        <p class="text-secondary">High-throughput streaming, distributed ETL, and predictive machine learning</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Card 1 -->
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-3 p-3 me-3" style="background: rgba(0, 242, 254, 0.1); color: var(--accent-cyan);">
+                        <i class="fa-solid fa-network-wired fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold text-white mb-0">1. Kafka Ingestion</h5>
+                        <small class="text-secondary">Apache Kafka & ZooKeeper</small>
+                    </div>
+                </div>
+                <p class="text-muted small mb-0">
+                    High-throughput stream processing layer reading vehicle telemetry, voltage fluctuations, internal resistance, and ambient temperatures in real-time.
+                </p>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-3 p-3 me-3" style="background: rgba(79, 172, 254, 0.1); color: var(--accent-blue);">
+                        <i class="fa-solid fa-bolt fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold text-white mb-0">2. PySpark ETL</h5>
+                        <small class="text-secondary">Distributed Parquet Pipeline</small>
+                    </div>
+                </div>
+                <p class="text-muted small mb-0">
+                    Calculates engineered feature kinetics: <code>Thermal_Stress_Index</code>, <code>Cycles_Per_Month</code>, and <code>Resistance_Per_Cycle</code> partitioned by battery chemistry.
+                </p>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-3 p-3 me-3" style="background: rgba(127, 0, 255, 0.1); color: var(--accent-purple);">
+                        <i class="fa-solid fa-brain fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold text-white mb-0">3. XGBoost Diagnostic</h5>
+                        <small class="text-secondary">Scikit-Learn ML Regressor</small>
+                    </div>
+                </div>
+                <p class="text-muted small mb-0">
+                    Ensemble gradient boosted trees accurately estimate State of Health (SoH %) and classify batteries as Healthy or needing immediate Replacement.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends "battery_app/base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- Page Title Header -->
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="fw-bold text-white mb-1"><i class="fa-solid fa-stethoscope text-cyan me-2" style="color:#00f2fe;"></i> Live Battery SOH Diagnostics</h2>
+                <p class="text-secondary mb-0">Input real-time battery telemetry metrics to predict State of Health (SoH %)</p>
+            </div>
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                <i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <div class="row g-4">
+            <!-- Form Card -->
+            <div class="col-lg-7">
+                <div class="glass-card p-4">
+                    <h5 class="fw-bold text-white mb-4 pb-2 border-bottom border-secondary" style="border-color: rgba(255,255,255,0.08) !important;">
+                        <i class="fa-solid fa-sliders text-cyan me-2" style="color:#00f2fe;"></i> Telemetry Input Parameters
+                    </h5>
+
+                    <form method="POST" action="{% url 'predict' %}">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            {% for field in form %}
+                            <div class="col-md-6">
+                                <label for="{{ field.id_for_label }}" class="form-label">
+                                    {{ field.label }}
+                                </label>
+                                {{ field }}
+                                {% if field.errors %}
+                                <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mt-4 pt-2">
+                            <button type="submit" class="btn btn-gradient w-100 py-3 fw-bold fs-6">
+                                <i class="fa-solid fa-microchip me-2"></i> Compute SOH & Diagnostic Report
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Result Diagnostic Card -->
+            <div class="col-lg-5">
+                {% if prediction %}
+                <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between" style="background: rgba(15, 23, 42, 0.85); border-color: rgba(0, 242, 254, 0.3);">
+                    <div>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <span class="text-secondary small fw-semibold text-uppercase">Diagnostic Results</span>
+                            <span class="badge bg-{{ badge_class }} px-3 py-2 fs-6 rounded-pill">
+                                <i class="fa-solid {% if status == 'Healthy' %}fa-circle-check{% else %}fa-triangle-exclamation{% endif %} me-1"></i> {{ status }}
+                            </span>
+                        </div>
+
+                        <!-- Score Gauge Circle -->
+                        <div class="text-center py-4 my-3 rounded-4" style="background: rgba(11, 15, 25, 0.6); border: 1px solid var(--bg-card-border);">
+                            <div class="text-secondary small mb-1 fw-semibold">PREDICTED STATE OF HEALTH</div>
+                            <div class="display-3 fw-bold my-1" style="background: linear-gradient(135deg, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                                {{ prediction }}<span class="fs-2">%</span>
+                            </div>
+                            <p class="text-muted small mb-0">XGBoost ML Pipeline Confidence: High</p>
+                        </div>
+
+                        <!-- Engineered Kinetics Summary -->
+                        <div class="vstack gap-2">
+                            <div class="d-flex justify-content-between p-2 rounded-3" style="background: rgba(255,255,255,0.03);">
+                                <span class="text-secondary small"><i class="fa-solid fa-temperature-arrow-up me-2 text-warning"></i> Thermal Stress Index</span>
+                                <span class="fw-semibold text-white small">Computed</span>
+                            </div>
+                            <div class="d-flex justify-content-between p-2 rounded-3" style="background: rgba(255,255,255,0.03);">
+                                <span class="text-secondary small"><i class="fa-solid fa-arrows-rotate me-2 text-info"></i> Cycles per Month Rate</span>
+                                <span class="fw-semibold text-white small">Active</span>
+                            </div>
+                            <div class="d-flex justify-content-between p-2 rounded-3" style="background: rgba(255,255,255,0.03);">
+                                <span class="text-secondary small"><i class="fa-solid fa-car-battery me-2 text-cyan" style="color:#00f2fe;"></i> Resistance per Cycle</span>
+                                <span class="fw-semibold text-white small">Nominal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top border-secondary text-center text-muted small" style="border-color: rgba(255,255,255,0.08) !important;">
+                        <i class="fa-solid fa-shield-halved me-1 text-cyan" style="color:#00f2fe;"></i> Recommendation:
+                        {% if status == 'Healthy' %}
+                        Battery parameters within optimal operating thresholds.
+                        {% else %}
+                        Battery capacity degraded below 80%. Maintenance / cell module replacement advised.
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="glass-card p-4 h-100 d-flex flex-column align-items-center justify-content-center text-center">
+                    <div class="rounded-circle p-4 mb-3" style="background: rgba(0, 242, 254, 0.08); color: var(--accent-cyan);">
+                        <i class="fa-solid fa-microchip display-4"></i>
+                    </div>
+                    <h5 class="fw-bold text-white mb-2">Awaiting Diagnostic Run</h5>
+                    <p class="text-muted small px-3 mb-0">
+                        Adjust telemetry inputs on the left panel and click <strong>"Compute SOH & Diagnostic Report"</strong> to evaluate the battery health prediction.
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
